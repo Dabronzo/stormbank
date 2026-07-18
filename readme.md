@@ -20,11 +20,11 @@ All commands are typed in the in-game chat.
 
 | Command | Description |
 |---------|-------------|
-| `?help` | List all StormBank commands |
-| `?bank` | Show your current balance and loan status |
-| `?loans` | List available public loan types |
-| `?loan <amount> <type>` | Borrow money using a loan type |
-| `?repay` | Pay off your entire remaining loan balance |
+| `?stormbank_help` | List all StormBank commands |
+| `?loan_situation` | Show your current balance and loan status |
+| `?loan_types` | List available public loan types |
+| `?create_loan <amount> <type>` | Borrow money using a loan type |
+| `?repay_loan` | Pay off your entire remaining loan balance |
 
 ### Command flow
 
