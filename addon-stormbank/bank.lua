@@ -1,12 +1,5 @@
--- Author: <Authorname> (Please change this in user settings, Ctrl+Comma)
--- GitHub: <GithubLink>
--- Workshop: <WorkshopLink>
---
---- Developed using LifeBoatAPI - Stormworks Lua plugin for VSCode - https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
---- If you have any issues, please report them here: https://github.com/nameouschangey/STORMWORKS_VSCodeExtension/issues - by Nameous Changey
 Bank = {}
 
-local DAYS_PER_MONTH = 30
 local check_timer = 0
 
 function Bank.initialize()
@@ -67,7 +60,7 @@ function Bank.processLoanPayment()
 
         if loan ~= nil then
             loan.next_payment_day =
-                loan.next_payment_day + DAYS_PER_MONTH
+                loan.next_payment_day + loan.days_per_payment
         end
     end
 end
@@ -75,7 +68,9 @@ end
 function Bank.createLoan(
     amount,
     installment,
-    number_of_installments)
+    number_of_installments,
+    days_per_payment
+)
 
     if g_savedata.bank.loan ~= nil then
         return false, "You already have a loan"
@@ -91,11 +86,26 @@ function Bank.createLoan(
         remaining_amount = installment * number_of_installments,
         installment = installment,
         installments_remaining = number_of_installments,
-        next_payment_day = server.getDateValue() + DAYS_PER_MONTH,
+        next_payment_day = server.getDateValue() + days_per_payment,
+        days_per_payment = days_per_payment,
         missed_payments = 0
     }
 
     return true, "Loan created successfully"
+end
+
+function Bank.fullRepayLoan()
+    local loan = g_savedata.bank.loan
+    if loan == nil then
+        return false, "No loan to repay"
+    end
+    local money = server.getCurrency()
+    if money < loan.remaining_amount then
+        return false, "Insufficient funds to repay loan"
+    end
+    server.setCurrency(money - loan.remaining_amount, server.getResearchPoints())
+    g_savedata.bank.loan = nil
+    return true, "Loan repaid successfully"
 end
 
 function Bank.tick(game_ticks)

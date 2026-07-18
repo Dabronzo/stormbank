@@ -1,9 +1,3 @@
--- Author: <Authorname> (Please change this in user settings, Ctrl+Comma)
--- GitHub: <GithubLink>
--- Workshop: <WorkshopLink>
---
---- Developed using LifeBoatAPI - Stormworks Lua plugin for VSCode - https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
---- If you have any issues, please report them here: https://github.com/nameouschangey/STORMWORKS_VSCodeExtension/issues - by Nameous Changey
 
 require("bank")
 require("displays")
@@ -21,7 +15,8 @@ Commands.handle = function(
 )
 
     if command == "?bank" then
-        Displays.financialSituation(peer_id)
+        local text = Displays.getFinancialSituation()
+        server.announce("StormBank", text, peer_id)
         return
     end
 
@@ -36,11 +31,27 @@ Commands.handle = function(
         return
     end
 
+    if command == "?repay" then
+        local success, message = Bank.fullRepayLoan()
+        if success then
+            server.announce("StormBank", message, peer_id)
+            return
+        end
+        server.announce("StormBank", message, peer_id)
+        return
+    end
+
+    if command == "?help" then
+        server.announce("StormBank", Displays.getCommandsHelpText(), peer_id)
+        return
+    end
+
 end
 
 Commands.handleLoan = function(peer_id, arguments)
     local amount = tonumber(arguments[1])
     local label = arguments[2]
+    local loanType = Loans.getTypes(label)
 
     if not Loans.validateLoanInput(amount, label) then
         server.announce(
@@ -51,11 +62,21 @@ Commands.handleLoan = function(peer_id, arguments)
         return
     end
 
-    local terms = Loans.calculateLoanTerms(amount, label)
+    if loanType == nil or amount == nil then
+        server.announce(
+            "StormBank",
+            "amount or loan type cannot be null",
+            peer_id
+        )
+        return
+    end
+
+    local terms = Loans.calculateLoanTerms(amount, loanType)
     local success, message = Bank.createLoan(
         amount,
         terms.installment,
-        terms.number_of_installments
+        terms.number_of_installments,
+        terms.days_per_payment
     )
     server.announce("StormBank", message, peer_id)
 end
