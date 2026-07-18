@@ -97,63 +97,6 @@ function Bank.createLoan(
     return true, "Loan created successfully"
 end
 
-function Bank.displayLoanStatus(peer_id)
-    local loan = g_savedata.bank.loan
-
-    if loan == nil then
-        server.announce(
-            "StormBank",
-            "You currently have no active loan.",
-            peer_id
-        )
-        return
-    end
-
-    local days_until_payment = math.max(
-        0,
-        math.ceil(
-            loan.next_payment_day - server.getDateValue()
-        )
-    )
-
-    server.announce("StormBank", "=== LOAN STATUS ===", peer_id)
-    server.announce(
-        "StormBank",
-        "World balance: $" .. server.getCurrency(),
-        peer_id
-    )
-    server.announce(
-        "StormBank",
-        "Original loan: $" .. loan.original_amount,
-        peer_id
-    )
-    server.announce(
-        "StormBank",
-        "Outstanding: $" .. loan.remaining_amount,
-        peer_id
-    )
-    server.announce(
-        "StormBank",
-        "Instalment: $" .. loan.installment,
-        peer_id
-    )
-    server.announce(
-        "StormBank",
-        "Instalments left: " .. loan.installments_remaining,
-        peer_id
-    )
-    server.announce(
-        "StormBank",
-        "Next payment: " .. days_until_payment .. " days",
-        peer_id
-    )
-    server.announce(
-        "StormBank",
-        "Missed payments: " .. loan.missed_payments,
-        peer_id
-    )
-end
-
 function Bank.tick(game_ticks)
     check_timer = check_timer + game_ticks
 

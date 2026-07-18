@@ -5,10 +5,12 @@ g_savedata = {}
 
 require("bank")
 require("commands")
+require("displays")
 
 
 function onCreate(is_created)
     Bank.initialize()
+    Displays.initialize()
 end
 
 function onCustomCommand(full_message, peer_id, is_admin, is_auth, command, ...)

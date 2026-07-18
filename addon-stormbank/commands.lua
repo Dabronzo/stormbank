@@ -6,6 +6,7 @@
 --- If you have any issues, please report them here: https://github.com/nameouschangey/STORMWORKS_VSCodeExtension/issues - by Nameous Changey
 
 require("bank")
+require("displays")
 
 Commands = {}
 
@@ -19,7 +20,7 @@ Commands.handle = function(
 )
 
     if command == "?bank" then
-        Bank.displayLoanStatus(peer_id)
+        Displays.loanStatus(peer_id)
         return
     end
     

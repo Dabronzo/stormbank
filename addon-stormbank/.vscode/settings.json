@@ -47,10 +47,10 @@
     ],
     "Lua.runtime.pathStrict": true,
     "Lua.workspace.library": [
-        "c:/Users/ayrto/stormbank/addon-stormbank/",
+        "c:/Users/ayrto/addons/stormbank/addon-stormbank/",
         "c:/Users/ayrto/.cursor/extensions/nameouschangey.lifeboatapi-0.0.33/assets/lua/Common/",
         "c:/Users/ayrto/.cursor/extensions/nameouschangey.lifeboatapi-0.0.33/assets/lua/Addon/",
-        "c:/Users/ayrto/stormbank/addon-stormbank/_build/libs/"
+        "c:/Users/ayrto/addons/stormbank/addon-stormbank/_build/libs/"
     ],
     "lifeboatapi.stormworks.libs.gitLibraries": [
         {
