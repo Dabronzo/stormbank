@@ -11,7 +11,8 @@ local check_timer = 0
 
 function Bank.initialize()
     g_savedata.bank = g_savedata.bank or {
-        loan = nil
+        loan = nil,
+        account_id = server.getMapID()
     }
 end
 

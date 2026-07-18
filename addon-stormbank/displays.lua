@@ -1,6 +1,6 @@
 Displays = {}
 
-function Displays.getLoanStatusText()
+function Displays.getFinancialSituation()
     local loan = g_savedata.bank.loan
     if loan == nil then
         return "No loan"
@@ -9,13 +9,13 @@ function Displays.getLoanStatusText()
     return table.concat({
         "LOAN STATUS",
         "-------------",
-        "Balance: $" .. server.getCurrency(),
-        "loan: $" .. loan.original_amount,
-        "remain: $" .. loan.remaining_amount,
-        "Instal: $" .. loan.installment,
-        "Left: " .. loan.installments_remaining,
-        "Nextpay: " .. days_until,
-        "Missed: " .. loan.missed_payments,
+        "Balance: $", server.getCurrency(),
+        "loan: $", loan.original_amount,
+        "remain: $", loan.remaining_amount,
+        "Instal: $", loan.installment,
+        "Left: ", loan.installments_remaining,
+        "Nextpay: ", days_until,
+        "Missed: ", loan.missed_payments,
     }, "\n")
 end
 
@@ -25,11 +25,12 @@ function Displays.initialize()
     }
 end
 
-function Displays.loanStatus(peer_id)
+function Displays.financialSituation(peer_id)
+    local account_id = g_savedata.bank.account_id
     if g_savedata.displays.isPopupOpen then
         server.setPopupScreen(
             peer_id,
-            Bank.loan_status_ui_id,
+            account_id,
             "StormBank",
             false,
             "",
@@ -40,10 +41,10 @@ function Displays.loanStatus(peer_id)
         return
     end
     g_savedata.displays.isPopupOpen = true
-    local text = Displays.getLoanStatusText()
+    local text = Displays.getFinancialSituation()
     server.setPopupScreen(
         peer_id,
-        Bank.loan_status_ui_id,
+        account_id,
         "StormBank",
         true,
         text,

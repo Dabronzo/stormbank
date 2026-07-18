@@ -7,6 +7,7 @@
 
 require("bank")
 require("displays")
+require("loans")
 
 Commands = {}
 
@@ -20,39 +21,41 @@ Commands.handle = function(
 )
 
     if command == "?bank" then
-        Displays.loanStatus(peer_id)
+        Displays.financialSituation(peer_id)
+        return
+    end
+
+    if command == "?loans" then
+        server.announce("StormBank", Loans.getTypesHelpText(), peer_id)
         return
     end
     
-    if command ~= "?loan" then
+    if command == "?loan" then
+        local arguments = { ... }
+        Commands.handleLoan(peer_id, arguments)
         return
     end
 
+end
 
-    local arguments = { ... }
+Commands.handleLoan = function(peer_id, arguments)
     local amount = tonumber(arguments[1])
+    local label = arguments[2]
 
-    if amount == nil or amount <= 0 then
+    if not Loans.validateLoanInput(amount, label) then
         server.announce(
             "StormBank",
-            "Usage: ?loan <amount>",
+            "Invalid amount or loan type",
             peer_id
         )
         return
     end
 
-    -- Initial fixed loan terms: 10% interest over 10 months
-    local number_of_installments = 10
-    local total_repayment = math.ceil(amount * 1.10)
-    local installment = math.ceil(
-        total_repayment / number_of_installments
-    )
-
+    local terms = Loans.calculateLoanTerms(amount, label)
     local success, message = Bank.createLoan(
         amount,
-        installment,
-        number_of_installments
+        terms.installment,
+        terms.number_of_installments
     )
-
     server.announce("StormBank", message, peer_id)
 end
