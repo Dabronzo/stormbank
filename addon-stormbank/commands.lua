@@ -14,24 +14,24 @@ Commands.handle = function(
     ...
 )
 
-    if command == "?bank" then
+    if command == "?loan_situation" then
         local text = Displays.getFinancialSituation()
         server.announce("StormBank", text, peer_id)
         return
     end
 
-    if command == "?loans" then
+    if command == "?loan_types" then
         server.announce("StormBank", Loans.getTypesHelpText(), peer_id)
         return
     end
     
-    if command == "?loan" then
+    if command == "?create_loan" then
         local arguments = { ... }
         Commands.handleLoan(peer_id, arguments)
         return
     end
 
-    if command == "?repay" then
+    if command == "?repay_loan" then
         local success, message = Bank.fullRepayLoan()
         if success then
             server.announce("StormBank", message, peer_id)
@@ -41,7 +41,7 @@ Commands.handle = function(
         return
     end
 
-    if command == "?help" then
+    if command == "?stormbank_help" then
         server.announce("StormBank", Displays.getCommandsHelpText(), peer_id)
         return
     end
